@@ -54,8 +54,56 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented"});
+    let userswithsamename = users.filter((user)=>{
+        return user.username === username
+      });
+      if(userswithsamename.length > 0){
+        var yahoo = [];
+        const isbnValue = req.params.isbn;
+        var data = JSON.parse(JSON.stringify(books), function(key, value) { 
+          if ( value.isbn === isbnValue ) 
+          yahoo.push(value);
+         });
+         let filtered_users = yahoo.filter((yahoo) => yahoo.isbn === isbnValue);
+         if (filtered_users.length > 0) {
+             let filtered_user = filtered_users[0];
+             let DOB = req.query.reviews;
+             //if the DOB has changed
+             if(DOB) {
+                 filtered_user.reviews = DOB
+             }
+                        yahoo = yahoo.filter((user) => user.isbn = isbnValue);
+             yahoo.push(filtered_user);
+             res.send(`User with the isbn  ${isbnValue} updated.`);
+         }
+         else{
+             res.send("Unable to find user!");
+         }
+    } 
+});
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    let userswithsamename = users.filter((user)=>{
+        return user.username === username
+      });
+      if(userswithsamename.length > 0){
+        var yahoo = [];
+        const isbnValue = req.params.isbn;
+        var data = JSON.parse(JSON.stringify(books), function(key, value) { 
+          if ( value.isbn === isbnValue ) 
+          yahoo.push(value);
+         });
+         let filtered_users = yahoo.filter((yahoo) => yahoo.isbn === isbnValue);
+         if (filtered_users.length > 0) {
+             let filtered_user = filtered_users[0];
+           
+            yahoo = yahoo.filter((user) => user.isbn != isbnValue);
+             yahoo.push(filtered_user);
+             res.send(`User with the isbn  ${isbnValue} updated.`);
+         }
+         else{
+             res.send("Unable to find user!");
+         }
+    } 
 });
 
 module.exports.authenticated = regd_users;
